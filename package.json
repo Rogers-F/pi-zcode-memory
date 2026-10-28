@@ -1,0 +1,21 @@
+{
+  "name": "pi-zcode-memory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PI-Desktop plugin: ZCode long-term memory port with sourced, toggleable improvements",
+  "license": "Apache-2.0",
+  "main": "main.js",
+  "scripts": {
+    "test": "node scripts/test.mjs",
+    "check": "node scripts/check.mjs",
+    "eval": "node scripts/eval.mjs",
+    "pack": "node scripts/pack.mjs",
+    "verify": "npm run check && npm test && npm run eval && npm run pack"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "jsdom": "^26.1.0",
+    "marked": "^16.4.2",
+    "yaml": "^2.9.0"
+  }
+}

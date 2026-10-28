@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "id": "local.pi-zcode-memory",
+  "name": "ZCode 记忆",
+  "version": "0.1.0",
+  "description": "把 ZCode 3.16.x 的长期记忆搬到 PI-Desktop：记忆规则与 MEMORY.md 索引注入、回合结束后后台自动提取、语义召回、Dream 整理、自定义代理持久记忆，以及一个可查看与恢复的管理面板。数据保存在本机 ~/.pi-desktop/zcode-memory。",
+  "author": "Tioit-Wang",
+  "license": "Apache-2.0",
+  "categories": [
+    "productivity"
+  ],
+  "i18n": {
+    "en": {
+      "name": "ZCode Memory",
+      "description": "ZCode 3.16.x long-term memory for PI-Desktop: memory rules plus a MEMORY.md index in the system prompt, background extraction after turns, semantic recall, Dream consolidation, custom-agent persistent memory, and a management panel with archive restore. Data stays on this machine in ~/.pi-desktop/zcode-memory.",
+      "safetyNotes": "Stores memory files, transcripts and archive copies under ~/.pi-desktop/zcode-memory on this machine; project-scope agent memory is stored in the project's .pi/zcode-memory directory. Memory content and recent conversation turns are sent to the model provider you selected in PI-Desktop when extraction, recall or Dream runs; the plugin declares no net.* permission and opens no connection of its own. Extraction and Dream can make up to 8 background model calls per minute (host limit) and cost tokens. The panel reads files read-only with a 5 MiB cap and refuses symlinks, path traversal and case aliases. Archiving uses the FreeDesktop trash layout under archive/ so a rewritten or deleted memory can be restored. Subagents do not pass through plugin hooks; the Task rewrite that carries custom-agent memory only takes effect on hosts that hand the same arguments object to the tool."
+    },
+    "zh-CN": {
+      "name": "ZCode 记忆",
+      "description": "把 ZCode 3.16.x 的长期记忆搬到 PI-Desktop：记忆规则与 MEMORY.md 索引注入、回合结束后后台自动提取、语义召回、Dream 整理、自定义代理持久记忆，以及可查看与恢复的管理面板。数据保存在本机 ~/.pi-desktop/zcode-memory。",
+      "safetyNotes": "记忆文件、转录与归档副本保存在本机 ~/.pi-desktop/zcode-memory；项目作用域的代理记忆保存在项目的 .pi/zcode-memory 目录。执行提取、召回或 Dream 时，记忆内容与最近的对话会发送到你在 PI-Desktop 里选定的模型提供商；插件不申请 net.* 权限，也不自行建立任何连接。提取与 Dream 每分钟最多发起 8 次后台模型调用（宿主限制），会消耗 Token。面板只读预览文件，单文件上限 5 MiB，并拒绝符号链接、路径穿越与大小写别名。归档使用 FreeDesktop 回收站布局放在 archive/ 下，被改写或删除的记忆可以恢复。子代理不经过插件钩子；携带自定义代理记忆的 Task 改写只在宿主把同一参数对象交给工具时生效。"
+    }
+  },
+  "main": "main.js",
+  "ui": {
+    "panel": "renderer/index.html",
+    "title": {
+      "en": "ZCode Memory",
+      "zh-CN": "ZCode 记忆"
+    },
+    "width": 1080,
+    "height": 760
+  },
+  "contributes": {
+    "commands": [
+      {
+        "id": "zcode-memory.open",
+        "title": "ZCode 记忆：打开管理面板",
+        "keywords": [
+          "memory",
+          "记忆",
+          "zcode"
+        ],
+        "category": "Productivity"
+      }
+    ],
+    "agentExtensions": [
+      "extension.js"
+    ],
+    "settings": [
+      {
+        "key": "autoExtract",
+        "title": "自动提取记忆 / Auto-extract memories",
+        "description": "回合结束后在后台从最近的对话里提取记忆。开启后可能增加模型调用和 Token 成本。",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "semanticRecall",
+        "title": "语义召回 / Semantic recall",
+        "description": "按需挑选相关记忆并附加到对话。关闭时改为把 MEMORY.md 索引注入系统提示。",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "key": "autoDream",
+        "title": "自动整理（Dream）/ Auto Dream",
+        "description": "满足门槛时在后台合并重复记忆。默认关闭，可在面板手动运行。",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "key": "strictUpstream",
+        "title": "严格上游模式 / Strict upstream mode",
+        "description": "一键关闭 E1–E4 全部改进，行为与 ZCode 3.16.x 完全一致。",
+        "type": "boolean",
+        "default": false
+      },
+      {
+        "key": "improveE1",
+        "title": "E1 中文感知的提取门槛",
+        "description": "带中日韩字符的消息按 Unicode 词边界计数，避免「记住……」这类无空格中文被上游的三词门槛挡掉。英文结果与上游一致。",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "improveE2",
+        "title": "E2 召回候选混合排序",
+        "description": "用 BM25 与修改时间做 RRF 融合，先排候选再交给选择器；只影响候选顺序，不改变选择器提示词。",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "improveE3",
+        "title": "E3 提取时预载最相似的记忆",
+        "description": "提取前把最相似的已有记忆正文放进上下文并标记为已读，减少重复文件。",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "improveE4",
+        "title": "E4 改写或删除前先归档",
+        "description": "后台改写或删除记忆前把旧内容存进 archive/（FreeDesktop 回收站布局），面板可恢复或彻底删除。",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "backgroundModel",
+        "title": "后台模型 / Background model",
+        "description": "留空使用当前会话的模型；填 providerId/modelId 可覆盖。找不到模型时跳过并在面板说明原因。",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "agentMemoryScopes",
+        "title": "自定义代理记忆作用域 / Custom agent memory scopes",
+        "description": "JSON 文本，形如 {\"reviewer\":\"project\"}；作用域可为 user / project / local。",
+        "type": "string",
+        "default": "{}"
+      },
+      {
+        "key": "taskRewrite",
+        "title": "Task 改写注入代理记忆 / Rewrite Task for agent memory",
+        "description": "父会话用 Task 委派已配置的代理时，把该代理的记忆提示与 MEMORY.md 追到任务文本末尾。",
+        "type": "boolean",
+        "default": true
+      }
+    ]
+  },
+  "permissions": [
+    "ui.panel",
+    "agent.extension",
+    "agent.complete",
+    "models.list"
+  ],
+  "engines": {
+    "piDesktop": ">=0.21.0"
+  },
+  "activationEvents": [
+    "onCommand:zcode-memory.open",
+    "onStartup"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "e1": {
+    "chinese": [
+      { "text": "记住：部署前要跑冒烟测试", "expect": "trigger" },
+      { "text": "记住这个", "expect": "either" },
+      { "text": "帮我看下这个函数", "expect": "either" },
+      { "text": "以后发布都用 pnpm 构建，别用 npm", "expect": "trigger" },
+      { "text": "继续", "expect": "no" },
+      { "text": "把日志级别调成 debug 再看", "expect": "either" }
+    ],
+    "english": [
+      { "text": "remember that deploys need smoke tests", "expect": "trigger" },
+      { "text": "yes", "expect": "no" },
+      { "text": "please continue", "expect": "either" },
+      { "text": "use pnpm for every release build", "expect": "trigger" }
+    ]
+  },
+  "e2": {
+    "now": 1767225600000,
+    "memories": [
+      { "filename": "deploy.md", "description": "release process and smoke tests", "type": "project", "mtimeMs": 1735689600000 },
+      { "filename": "tests.md", "description": "integration tests hit a real database", "type": "feedback", "mtimeMs": 1735776000000 },
+      { "filename": "logging.md", "description": "observability and logging levels", "type": "project", "mtimeMs": 1735862400000 },
+      { "filename": "ui.md", "description": "panel colors and typography", "type": "project", "mtimeMs": 1767139200000 },
+      { "filename": "auth.md", "description": "oauth token storage", "type": "project", "mtimeMs": 1767139200000 },
+      { "filename": "db.md", "description": "postgres migration notes", "type": "project", "mtimeMs": 1767139200000 },
+      { "filename": "style.md", "description": "code style rules", "type": "feedback", "mtimeMs": 1767139200000 },
+      { "filename": "roadmap.md", "description": "quarterly roadmap", "type": "project", "mtimeMs": 1767139200000 },
+      { "filename": "meetings.md", "description": "weekly meeting cadence", "type": "reference", "mtimeMs": 1767139200000 },
+      { "filename": "vendors.md", "description": "vendor contacts", "type": "reference", "mtimeMs": 1767139200000 },
+      { "filename": "billing.md", "description": "billing dashboards", "type": "reference", "mtimeMs": 1767139200000 },
+      { "filename": "oncall.md", "description": "oncall rotation", "type": "reference", "mtimeMs": 1767139200000 }
+    ],
+    "queries": [
+      { "query": "what are the release process steps and smoke tests?", "relevant": ["deploy.md"] },
+      { "query": "integration tests should use a real database?", "relevant": ["tests.md"] },
+      { "query": "which logging level and observability setup?", "relevant": ["logging.md"] }
+    ]
+  },
+  "e3": {
+    "items": [
+      {
+        "topic": "release",
+        "existing": { "filename": "deploy.md", "body": "Release uses pnpm build and a smoke test before publishing." },
+        "newText": "release build smoke test pnpm publish"
+      },
+      {
+        "topic": "database",
+        "existing": { "filename": "tests.md", "body": "Integration tests must hit a real database, never mocks." },
+        "newText": "integration tests real database no mocks"
+      },
+      {
+        "topic": "logging",
+        "existing": { "filename": "logging.md", "body": "Default log level is info; debug only for request traces." },
+        "newText": "logging level debug request traces"
+      }
+    ]
+  }
+}

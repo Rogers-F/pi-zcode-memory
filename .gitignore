@@ -1,0 +1,15 @@
+# 依赖与产物：npm install 生成，不进仓库
+node_modules/
+dist/
+
+# 打包 / 日志 / 本机临时文件
+*.piplug
+*.log
+.env
+.env.*
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

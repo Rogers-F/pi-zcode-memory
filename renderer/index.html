@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="pi-plugin-chrome" content="v2">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' file:; style-src 'self' file: 'unsafe-inline'; img-src data:; font-src 'self' file:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>ZCode 记忆</title>
+<link rel="stylesheet" href="panel.css">
+</head>
+<body>
+<div id="app">
+  <header id="head">
+    <div class="head-text">
+      <h1 id="title">ZCode 记忆</h1>
+      <p id="subtitle">在工作区中保存并复用长期上下文，新会话生效。</p>
+    </div>
+    <button id="refresh" type="button">刷新</button>
+  </header>
+
+  <section id="settings" aria-label="设置"></section>
+
+  <main id="main">
+    <section id="list-pane">
+      <div class="pane-head">
+        <label class="search">
+          <input id="search" type="search" placeholder="搜索记忆文件…" autocomplete="off">
+        </label>
+        <select id="workspace" aria-label="工作区"></select>
+        <span id="count" class="count"></span>
+      </div>
+      <ul id="files" class="files"></ul>
+      <p id="empty" class="empty" hidden>暂无已保存的工作区记忆</p>
+    </section>
+
+    <section id="detail-pane">
+      <div class="pane-head">
+        <strong id="file-name">选择一个记忆文件以查看内容。</strong>
+        <span id="file-time" class="muted"></span>
+      </div>
+      <article id="preview" class="preview" aria-live="polite"></article>
+      <section id="archive-block" hidden>
+        <h2>归档</h2>
+        <ul id="archive" class="files"></ul>
+      </section>
+    </section>
+  </main>
+
+  <footer id="foot">
+    <div id="status" class="status"></div>
+    <div class="foot-actions">
+      <button id="dream" type="button">立即整理（Dream）</button>
+    </div>
+  </footer>
+</div>
+<script src="panel.js"></script>
+</body>
+</html>
